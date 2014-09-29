@@ -45,16 +45,16 @@ if (Ti.version < 1.8) {
   console.log(isTablet);
 
   var Window;
-  if (isTablet) {
+  // if (isTablet) {
     Window = require('ui/tablet/ApplicationWindow');
-  } else {
-    // Android uses platform-specific properties to create windows.
-    // All other platforms follow a similar UI pattern.
-    if (osname === 'android') {
-      Window = require('ui/handheld/android/ApplicationWindow');
-    } else {
-      Window = require('ui/handheld/ApplicationWindow');
-    }
-  }
+  // } else {
+    // // Android uses platform-specific properties to create windows.
+    // // All other platforms follow a similar UI pattern.
+    // if (osname === 'android') {
+      // Window = require('ui/handheld/android/ApplicationWindow');
+    // } else {
+      // Window = require('ui/handheld/ApplicationWindow');
+    // }
+  // }
   new Window().open();
 })();
