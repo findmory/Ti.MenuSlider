@@ -1,66 +1,17 @@
-//Application Window Component Constructor
 function ApplicationWindow() {
-	//load component dependencies
-	var FirstView = require('ui/common/FirstView');
-
-	//create component instance
 	var self = Ti.UI.createWindow({
-		backgroundColor:'#ffffff',
+		backgroundColor:'#eee',
 		zIndex:0
 	});
 	
-	//move this to file and require
-	var menuBarView = Ti.UI.createView({
-	    backgroundColor: '#DDDDDD',
-	    top:0,
-	    width:Ti.UI.FILL,
-	    height:40,
-	    zIndex:100 //always on top
-	});
-	self.add(menuBarView);
+	//require the menu
+	var ViewMenuBar = require('ui/common/ViewMenuBar');
+	var vw_menuBar = new ViewMenuBar();
+	self.add(vw_menuBar);
 	
-	var label = Ti.UI.createLabel({
-	    color:'#000000',
-        text: 'open view 1 (or swipe right from the left edge to bring in a view)',
-        height:'auto',
-        width:'auto'
-	});
 	
-	menuBarView.add(label);
-	
-	var firstView = new FirstView();
-	var firstViewVisible = 0;
-	firstView.top = -100;
-	firstView.left = 100;
-	
-	var ViewAnimation = require('js/ViewAnimation');
-    var anim = new ViewAnimation({
-        direction: 'top',
-        speed: 750,
-        view: firstView
-    });
-	
-    //click the label to bring a view in from the top
-	label.addEventListener('click', function(){
-	    if (firstViewVisible === 0){
-	        self.add(firstView);
-            firstView.animate(anim.slideIn);
-            firstViewVisible = 1;
-	    }else{
-            firstView.animate(anim.slideOut);
-	        firstViewVisible = 0;
-	    }
-	});
-	
-	//here's a fullscreen view that will be loaded by the viewController below
-	//here's a view that is full screen that slides in from the left
-    var LeftMenuView = require('ui/common/LeftMenuView'); 
-    var leftMenuView = new LeftMenuView();
-    leftMenuView.left = -Ti.Platform.displayCaps.platformWidth;  //offscreen
-    self.add(leftMenuView);
-    
     //create a greyed out layer to cover background window when menu is overlayed
-    var viewLightbox = Ti.UI.createView({
+    var vw_lightBox = Ti.UI.createView({
         height:Ti.UI.FILL,
         width:Ti.UI.FILL,
         left:0,
@@ -69,17 +20,17 @@ function ApplicationWindow() {
         opacity:0,
         zIndex:10
     });
-    self.add(viewLightbox);
+    self.add(vw_lightBox);
     var opacityForBackground = 0;
     
-    viewLightbox.addEventListener('click',function(){
+    vw_lightBox.addEventListener('click',function(){
         var position;
         slideClosed();
         leftMenuAnimate();
     });
 	
 	//create a transparent view that is 20 pix wide and runs down the left edge to control sliding a full view in and out
-	var viewController = Ti.UI.createView({
+	var vw_menuController = Ti.UI.createView({
 	    width: 20,
 	    left:0,
 	    height: Ti.UI.FILL,
@@ -89,49 +40,39 @@ function ApplicationWindow() {
 	
 	function slideOpen() {
 	    position = 0;
-        viewController.isVisible = 1;
-        viewController.width = leftMenuView.width;
+        vw_menuController.isVisible = 1;
+        vw_menuController.width = vw_leftMenu.width;
         opacityForBackground = .75;
 	}
 	
 	function slideClosed(){
 	    position = -Ti.Platform.displayCaps.platformWidth + 20;
-        viewController.isVisible = 0;
-        viewController.width = 20;
+        vw_menuController.isVisible = 0;
+        vw_menuController.width = 20;
         opacityForBackground = 0;
 	}
 	
 	function leftMenuAnimate(){
-	    leftMenuView.animate({
+	    vw_leftMenu.animate({
             left: position,
-            backgroundColor : viewController.isVisible ? "white" : "transparent",
+            backgroundColor : vw_menuController.isVisible ? "white" : "transparent",
             speed:800
         });
         
-        viewLightbox.animate({
+        vw_lightBox.animate({
             opacity : opacityForBackground,
             speed: 700
         });
 	}
 	
-	self.add(viewController);
-	viewController.isVisible = 0; //custom property to track view toggle
-	viewController.addEventListener('swipe', function(e) {
-	    console.log ("swipe: " , e.direction);
-	    var position;
-	    cancelBubble : true;
-	    if (e.direction == "right" && !viewController.isVisible){
-            slideOpen();
-	    }
-        if (e.direction == "left" && viewController.isVisible){
-            slideClosed();
-        }
-        
-        leftMenuAnimate();
-       
-        //TODO: i suppose i should fire an event that destroys this view now
-
-    });
+	self.add(vw_menuController);
+	vw_menuController.isVisible = 0; //custom property to track view toggle
+	//here's a fullscreen view that will be loaded by the vw_menuController below
+    //here's a view that is full screen that slides in from the left
+    var ViewLeftMenu = require('ui/common/ViewLeftMenu'); 
+    var vw_leftMenu = new ViewLeftMenu(vw_menuController, vw_lightBox); //pass in the parent window
+    vw_leftMenu.left = -Ti.Platform.displayCaps.platformWidth;  //offscreen
+    self.add(vw_leftMenu);
 
 
 	return self;
