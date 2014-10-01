@@ -32,11 +32,7 @@ function ViewLeftMenu(vw_menuController, parentWindow) {
     function handleTouchEnd(e){
         //if it's open more than 2/3 way, open all the way, else send it back closed
         if (-vw_leftMenu.left <= (vw_leftMenu.width * .33)){
-            vw_leftMenu.animate({
-                left : 0,
-                duration : 500
-            });
-            vw_lightBox.opacity = 0.75;
+            slideOpen();
                        
         }else{
             slideClosed();
@@ -51,13 +47,13 @@ function ViewLeftMenu(vw_menuController, parentWindow) {
    
    //create a greyed out layer to cover background window when menu is overlayed
     var vw_lightBox = Ti.UI.createView({
-        height:Ti.UI.FILL,
-        width:Ti.UI.FILL,
-        left:0,
-        top:0,
-        backgroundColor:"#333333",
-        opacity:0,
-        zIndex:10
+        height: Ti.UI.FILL,
+        width: Ti.UI.FILL,
+        left: 0,
+        top: 0,
+        backgroundColor: "#333333",
+        opacity: 0,
+        zIndex: 10
     });
     parentWindow.add(vw_lightBox);
     
@@ -66,6 +62,16 @@ function ViewLeftMenu(vw_menuController, parentWindow) {
         slideClosed();
     });
     
+    function slideOpen(){
+        vw_leftMenu.animate({
+            left: 0,
+            duration: 500
+        });
+        vw_lightBox.animate({
+            opacity : 0.75,
+            duration: 500
+        });
+    }
     function slideClosed(){
         vw_leftMenu.animate({
             left: -vw_leftMenu.width,
@@ -73,6 +79,13 @@ function ViewLeftMenu(vw_menuController, parentWindow) {
         });
         vw_lightBox.animate({opacity: 0, duration: 500});
     }
+    
+    //event handler to open and close menu when activated from ViewMenuBar
+    Ti.App.addEventListener('app:menuSlider', function(dict){
+        console.log(dict);
+        dict.state == 'open' ? slideClose() : slideOpen();
+        
+    });//dictionary of keys
   
     return vw_leftMenu;
 }

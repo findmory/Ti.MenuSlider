@@ -11,10 +11,25 @@ function ViewMenuBar() {
 	    color:'#000000',
         text: 'swipe from left edge to bring in view',
         height:'auto',
-        width:'auto'
+        width:'auto',
+        left: 'auto',
+        font: { fontSize:12 }
+	});
+	vw_menuBar.add(label);
+	
+	var btn_menu = Ti.UI.createImageView({
+	    image: 'images/bar_menu.png',
+	    left: -2,
+	    height: 20,
+	    width:20
+	});
+	vw_menuBar.add(btn_menu);
+	btn_menu.addEventListener('click', function(){
+	    //aniamte it to the left
+	    //toggle open closed
+	    Ti.App.fireEvent('app:menuSlider',{state: 'closed'}); // can pass a dictionary of keys  like state:'open'
 	});
 	
-	vw_menuBar.add(label);
 
 	return vw_menuBar;
 }

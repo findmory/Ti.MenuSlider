@@ -1,7 +1,9 @@
 function ApplicationWindow() {
 	var self = Ti.UI.createWindow({
 		backgroundColor:'#eee',
-		zIndex:0
+		zIndex:0,
+		statusBarStyle : Titanium.UI.iPhone.StatusBar.LIGHT_CONTENT,
+        fullscreen:true //hide status bar info stuffs!
 	});
 	
 	//require the menu
