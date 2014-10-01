@@ -1,4 +1,4 @@
-function ViewMenuBar() {
+function ViewMenuBar(vw_leftMenu) {
 	var vw_menuBar = Ti.UI.createView({
 	    backgroundColor: '#DDDDDD',
 	    top:0,
@@ -27,10 +27,10 @@ function ViewMenuBar() {
 	btn_menu.addEventListener('click', function(){
 	    //aniamte it to the left
 	    //toggle open closed
-	    Ti.App.fireEvent('app:menuSlider',{state: 'closed'}); // can pass a dictionary of keys  like state:'open'
+	    var state = vw_leftMenu.isOpen ? 'open' : 'closed';
+	    Ti.App.fireEvent('app:menuSlider',{state: state}); // can pass a dictionary of keys  like state:'open'
 	});
 	
-
 	return vw_menuBar;
 }
 module.exports = ViewMenuBar;

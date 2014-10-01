@@ -1,10 +1,11 @@
 function ViewLeftMenu(vw_menuController, parentWindow) {
     var vw_leftMenu = Ti.UI.createView({
         left: -Ti.Platform.displayCaps.platformWidth,  //offscreen
-        height:Ti.Platform.displayCaps.platformHeight,
-        width:Ti.Platform.displayCaps.platformWidth * .8,
+        height: Ti.Platform.displayCaps.platformHeight,
+        width: Ti.Platform.displayCaps.platformWidth * .8,
         backgroundColor: 'black',
-        zIndex:20
+        zIndex: 20,
+        isOpen: false //property to track open/closed state
        // bubbleParent: false // so clicks on the window below don't bubble!
     });
     
@@ -71,6 +72,7 @@ function ViewLeftMenu(vw_menuController, parentWindow) {
             opacity : 0.75,
             duration: 500
         });
+        vw_leftMenu.isOpen = true;
     }
     function slideClosed(){
         vw_leftMenu.animate({
@@ -78,12 +80,13 @@ function ViewLeftMenu(vw_menuController, parentWindow) {
             duration:500
         });
         vw_lightBox.animate({opacity: 0, duration: 500});
+        vw_leftMenu.isOpen = false;
     }
     
     //event handler to open and close menu when activated from ViewMenuBar
     Ti.App.addEventListener('app:menuSlider', function(dict){
         console.log(dict);
-        dict.state == 'open' ? slideClose() : slideOpen();
+        dict.state == 'open' ? slideClosed() : slideOpen();
         
     });//dictionary of keys
   
